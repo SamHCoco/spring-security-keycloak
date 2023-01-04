@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: spring-keycloak
+  output:
+    ansi:
+      enabled: ALWAYS
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: security-app
+            client-secret: 8611ef35-822f-4aa7-b708-970a73608669
+            authorization-grant-type: authorization_code
+            scope: openid
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8080/auth/realms/master
+            token-uri: http://localhost:8080/auth/realms/master/protocol/openid-connect/token
+            authorization-uri: http://localhost:8080/auth/realms/master/protocol/openid-connect/auth
+            user-name-attribute: preferred_username
+  profiles:
+    active: dev

@@ -1,0 +1,10 @@
+server:
+  port: 9000
+
+#keycloak:
+#  realm: master
+#  auth-server-url: http://localhost:8080/auth
+#  ssl-required: external
+#  resource: security-app
+#  credentials:
+#    secret: 8611ef35-822f-4aa7-b708-970a73608669
