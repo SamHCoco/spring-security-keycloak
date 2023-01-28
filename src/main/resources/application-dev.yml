@@ -1,10 +1,15 @@
 server:
   port: 9000
 
-#keycloak:
-#  realm: master
-#  auth-server-url: http://localhost:8080/auth
-#  ssl-required: external
-#  resource: security-app
-#  credentials:
-#    secret: 8611ef35-822f-4aa7-b708-970a73608669
+spring:
+  application:
+    name: spring-keycloak
+  output:
+    ansi:
+      enabled: ALWAYS
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/auth/realms/projects
+          jwt-set-uri: http://localhost:8080/auth/realms/projects/protocol/openid-connect/certs
