@@ -6,13 +6,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtDecoders;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
@@ -21,34 +22,30 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(
-        prePostEnabled = true,
-        securedEnabled = true,
-        jsr250Enabled = true)
-public class WebSecurityConfig extends GlobalMethodSecurityConfiguration {
+@EnableMethodSecurity(prePostEnabled = true)
+public class WebSecurityConfig {
 
-    @Value("${spring.security.oauth2.resourceserver.jwt.jwt-set-uri}")
-    private String jwtSetUri;
+    @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
+    private String issuerUri;
 
     @Bean
-    protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
-        return new RegisterSessionAuthenticationStrategy(new SessionRegistryImpl());
-    }
-
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .anyRequest()
-                .permitAll()
-                .and()
-                .oauth2ResourceServer()
-                .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()));
+    public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(auth ->
+                        auth.anyRequest().permitAll())
+                .oauth2ResourceServer(oauth2 ->
+                        oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
+                .csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }
 
+//    @Bean
+//    public JwtDecoder jwtDecoder() {
+//        return NimbusJwtDecoder.withJwkSetUri(issuerUri).build();
+//    }
+
     @Bean
     public JwtDecoder jwtDecoder() {
-        return NimbusJwtDecoder.withJwkSetUri(jwtSetUri).build();
+        return JwtDecoders.fromIssuerLocation(issuerUri);
     }
 
     private Converter<Jwt, ? extends AbstractAuthenticationToken> jwtAuthenticationConverter() {
@@ -56,6 +53,11 @@ public class WebSecurityConfig extends GlobalMethodSecurityConfiguration {
         jwtAuthConverter.setJwtGrantedAuthoritiesConverter(new KeycloakRoleConverter());
         return jwtAuthConverter;
     }
+
+//    @Bean
+//    protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
+//        return new RegisterSessionAuthenticationStrategy(new SessionRegistryImpl());
+//    }
 
 
 }
