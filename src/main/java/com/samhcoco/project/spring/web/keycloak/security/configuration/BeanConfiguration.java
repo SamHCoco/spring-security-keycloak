@@ -1,0 +1,16 @@
+package com.samhcoco.project.spring.web.keycloak.security.configuration;
+
+import com.google.gson.Gson;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestClient;
+
+@Configuration
+public class BeanConfiguration {
+
+    @Bean
+    public RestClient restClient() {
+        return RestClient.create();
+    }
+
+}
