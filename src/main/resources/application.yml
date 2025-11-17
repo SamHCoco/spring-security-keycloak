@@ -13,14 +13,12 @@ spring:
             client-secret: ${KEYCLOAK_CLIENT_SECRET}
             authorization-grant-type: client_credentials
             scope: openid,profile,email
-        #            redirect-uri: "{baseUrl}/login/oauth2/code/keycloak"
         provider:
           keycloak:
             issuer-uri: http://localhost:8080/realms/master
       resourceserver:
         jwt:
           issuer-uri: http://localhost:8080/realms/master
-#          jwt-set-uri: http://localhost:8080/auth/realms/projects/protocol/openid-connect/certs
 
 keycloak:
   realm: master

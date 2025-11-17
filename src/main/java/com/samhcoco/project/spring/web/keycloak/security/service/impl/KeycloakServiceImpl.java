@@ -57,13 +57,13 @@ public class KeycloakServiceImpl implements KeycloakService {
     private final RestClient restClient;
 
 //    @PostConstruct
-//    public void setup () {
-//        try {
-//            initialize();
-//        } catch (HttpClientErrorException e) {
-//            log.debug(format("Attempted to create Keycloak client '%s' - this client may already exist.", clientName));
-//        }
-//    }
+    public void setup () {
+        try {
+            initialize();
+        } catch (HttpClientErrorException e) {
+            log.debug(format("Attempted to create Keycloak client '%s' - this client may already exist.", clientName));
+        }
+    }
 
     @Override
     public KeycloakToken getAdminAccessToken() {
